@@ -1,11 +1,125 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RH Pages</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Para o Amor da Minha Vida</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    
+
+  <!-- Container principal -->
+  <main class="hero" role="main" aria-labelledby="hero-title">
+
+    <h1 id="hero-title">Para Você, Meu Amor <span aria-hidden="true">❤️</span></h1>
+    <p class="subtitle">Um cantinho só para lembrar o quanto você é especial.</p>
+
+    <!-- Foto em destaque (mude URL no script abaixo) -->
+    <figure class="photo-frame" aria-hidden="false">
+      <img id="hero-photo" class="photo" src="" alt="Foto dela" />
+      <figcaption class="sr-only" id="photo-caption">Foto do amor da minha vida</figcaption>
+    </figure>
+
+    <!-- Controles -->
+    <div class="controls">
+      <button class="button-love" id="revealBtn">Tenho algo pra você 💌</button>
+    </div>
+
+    <!-- Mensagem (aparece ao clicar) -->
+    <section id="msg" class="message-box" aria-live="polite">
+      <p id="typed"> </p>
+    </section>
+
+  </main>
+
+  <!-- Peças visuais arrojadas: corações flutuantes -->
+  <div id="hearts" aria-hidden="true"></div>
+
+  <script>
+    /* === PERSONALIZE AQUI ===
+       Troque NAME, PHOTO_URL e MUSIC_URL conforme quiser. 
+       Se não quiser música, mantenha MUSIC_URL = ''.
+    */
+    const NAME = 'Iasmin';
+    const PHOTO_URL = ''; // cole aqui a URL da foto (ex.: 'images/minha-foto.jpg')
+    const MUSIC_URL = ''; // opcional: URL de mp3
+
+    // Elementos
+    const photo = document.getElementById('hero-photo');
+    const revealBtn = document.getElementById('revealBtn');
+    const msgBox = document.getElementById('msg');
+    const typedEl = document.getElementById('typed');
+    const heartsRoot = document.getElementById('hearts');
+
+    // Conteúdo da mensagem — personalize se quiser
+    const MESSAGE = `Querida ${NAME},
+
+Desde que você entrou na minha vida, cada dia ganhou mais sentido. Obrigado por ser minha paz, meu sorriso e minha maior inspiração. Eu te amo. 💖`;
+
+    // Inicializa foto e atributos
+    function init(){
+      if(PHOTO_URL) photo.src = PHOTO_URL; else photo.src = 'fotoDela.jpeg';
+      photo.alt = `Foto de ${NAME}`;
+    }
+
+    // Download simples
+    function downloadImage(url, filename){
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+    }
+
+    // Typing effect
+    function typeMessage(text, el, speed = 28){
+      el.textContent = '';
+      let i = 0;
+      const t = setInterval(()=>{
+        el.textContent += text[i] === '\n' ? '\n' : text[i] || '';
+        i++;
+        if(i >= text.length){ clearInterval(t); }
+      }, speed);
+    }
+
+    // Show message and play music & hearts
+    let audio;
+    function reveal(){
+      msgBox.style.display = 'block';
+      typeMessage(MESSAGE, typedEl, 28);
+      spawnHearts(18);
+      if(MUSIC_URL){
+        if(!audio){ audio = new Audio(MUSIC_URL); audio.volume = 0.75; }
+        audio.currentTime = 0; audio.play().catch(()=>{});
+      }
+      revealBtn.setAttribute('aria-pressed','true');
+    }
+
+    // Floating hearts generator
+    function spawnHearts(count=12){
+      for(let i=0;i<count;i++){
+        const h = document.createElement('div');
+        h.className = 'floating-heart';
+        h.style.left = (20 + Math.random()*60) + '%';
+        h.style.bottom = (-10 - Math.random()*20) + 'px';
+        h.style.opacity = (0.6 + Math.random()*0.4);
+        heartsRoot.appendChild(h);
+        // remove after animation
+        h.addEventListener('animationend', ()=> h.remove());
+      }
+    }
+
+    // Eventos
+    revealBtn.addEventListener('click', reveal);
+    revealBtn.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') reveal(); });
+
+    // Inicialização
+    init();
+
+    // Acessibilidade: se preferir, dispare mostrando mensagem automaticamente no carregamento
+    // window.addEventListener('load', reveal);
+
+  </script>
+
 </body>
 </html>
